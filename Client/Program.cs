@@ -1,6 +1,10 @@
+using BuildWatch.Client;
+using BuildWatch.Shared;
+using Grpc.Net.Client;
+using Grpc.Net.Client.Web;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using BuildWatch.Client;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -14,7 +18,15 @@ builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().Cre
 builder.Services.AddMsalAuthentication(options =>
 {
     builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
-    options.ProviderOptions.DefaultAccessTokenScopes.Add("https://microsoft.onmicrosoft.com/177e5287-d277-4d65-8e7b-77135c831bed/API.Access");
+    //options.ProviderOptions.DefaultAccessTokenScopes.Add("https://microsoft.onmicrosoft.com/177e5287-d277-4d65-8e7b-77135c831bed/API.Access");
+});
+
+builder.Services.AddSingleton(services =>
+{
+    var httpClient = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()));
+    var baseUri = services.GetRequiredService<NavigationManager>().BaseUri;
+    var channel = GrpcChannel.ForAddress(baseUri, new GrpcChannelOptions { HttpClient = httpClient });
+    return new WeatherForecasts.WeatherForecastsClient(channel);
 });
 
 await builder.Build().RunAsync();

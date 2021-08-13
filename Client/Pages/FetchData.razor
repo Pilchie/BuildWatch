@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using BuildWatch.Shared
 @attribute [Authorize]
-@inject HttpClient Http
+@inject WeatherForecasts.WeatherForecastsClient WeatherForecastsClient
 
 <h1>Weather forecast</h1>
 
@@ -20,7 +20,6 @@ else
             <tr>
                 <th>Date</th>
                 <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
                 <th>Summary</th>
             </tr>
         </thead>
@@ -28,9 +27,8 @@ else
             @foreach (var forecast in forecasts)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.DateTimeStamp.ToDateTime().ToShortDateString()</td>
                     <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
                     <td>@forecast.Summary</td>
                 </tr>
             }
@@ -39,18 +37,9 @@ else
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
-
+    private IList<WeatherForecast>? forecasts;
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
-        }
+        forecasts = (await WeatherForecastsClient.GetWeatherAsync(new WeatherForecast())).Forecasts;
     }
-
 }

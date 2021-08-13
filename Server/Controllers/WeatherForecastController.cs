@@ -5,7 +5,7 @@ using BuildWatch.Shared;
 
 namespace BuildWatch.Server.Controllers;
 
-[Authorize]
+//[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class WeatherForecastController : ControllerBase
@@ -28,7 +28,7 @@ public class WeatherForecastController : ControllerBase
     [HttpGet]
     public IEnumerable<WeatherForecast> Get()
     {
-        HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
+        //HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {

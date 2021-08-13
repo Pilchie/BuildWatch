@@ -21,12 +21,9 @@ builder.Services.AddMsalAuthentication(options =>
     //options.ProviderOptions.DefaultAccessTokenScopes.Add("https://microsoft.onmicrosoft.com/177e5287-d277-4d65-8e7b-77135c831bed/API.Access");
 });
 
-builder.Services.AddSingleton(services =>
+builder.Services.AddGrpcClient<WeatherForecasts.WeatherForecastsClient>((services, options) =>
 {
-    var httpClient = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()));
-    var baseUri = services.GetRequiredService<NavigationManager>().BaseUri;
-    var channel = GrpcChannel.ForAddress(baseUri, new GrpcChannelOptions { HttpClient = httpClient });
-    return new WeatherForecasts.WeatherForecastsClient(channel);
-});
+    options.Address = new Uri(ServiceProviderServiceExtensions.GetRequiredService<NavigationManager>(services).BaseUri);
+}).ConfigurePrimaryHttpMessageHandler(() => new GrpcWebHandler(new HttpClientHandler()));
 
 await builder.Build().RunAsync();

@@ -3,6 +3,8 @@ using Grpc.Core;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Authorization;
 
+namespace BuildWatch.Server.Services;
+
 [Authorize]
 public class WeatherForecastService : WeatherForecasts.WeatherForecastsBase
 {

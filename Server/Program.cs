@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using BuildWatch.Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Identity.Web;
 
 var builder = WebApplication.CreateBuilder(args);

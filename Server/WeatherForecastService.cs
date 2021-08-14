@@ -1,7 +1,9 @@
 ﻿using BuildWatch.Shared;
 using Grpc.Core;
 using Google.Protobuf.WellKnownTypes;
+using Microsoft.AspNetCore.Authorization;
 
+[Authorize]
 public class WeatherForecastService : WeatherForecasts.WeatherForecastsBase
 {
     private static readonly string[] Summaries = new[]
